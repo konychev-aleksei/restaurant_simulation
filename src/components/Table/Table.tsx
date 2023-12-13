@@ -7,7 +7,7 @@ type TableProps = {
 };
 
 const Table: FC<TableProps> = ({ x, y }) => {
-  return <div style={{ top: x * 10, left: y * 10 }} className={style.table} />;
+  return <div style={{ top: y, left: x }} className={style.table} />;
 };
 
 export default Table;

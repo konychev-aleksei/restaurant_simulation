@@ -1,9 +1,9 @@
 import { FC } from "react";
 import style from "./style.module.scss";
 
-type ClientProps = { x: number; y: number };
+type WaiterProps = { x: number; y: number };
 
-const Client: FC<ClientProps> = ({ x, y }) => {
+const Waiter: FC<WaiterProps> = ({ x, y }) => {
   return (
     <div
       style={{
@@ -15,4 +15,4 @@ const Client: FC<ClientProps> = ({ x, y }) => {
   );
 };
 
-export default Client;
+export default Waiter;
