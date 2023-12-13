@@ -39,10 +39,13 @@ const waitersSlice = createSlice({
       Object.keys(state.waiters).forEach((id: string) => {
         const table = state.waiters[id].table;
 
+        if (!table.id) {
+          return;
+        }
+
         if (
-          table.id &&
-          (Math.abs(table.x - state.waiters[id].x) > 10 ||
-            Math.abs(table.y - state.waiters[id].y) > 10)
+          Math.abs(table.x - state.waiters[id].x) > 10 ||
+          Math.abs(table.y - state.waiters[id].y) > 10
         ) {
           state.waiters[id].x += (table.x - state.waiters[id].x) / 40;
           state.waiters[id].y += (table.y - state.waiters[id].y) / 40;
