@@ -7,7 +7,7 @@ export type TClient = {
   x: number;
   y: number;
   isSet: boolean;
-  isServed: boolean;
+  isLeaving: boolean;
   table: {
     id: string | null;
     x: number;
@@ -33,7 +33,7 @@ const clientsSlice = createSlice({
         x: 0,
         y: 0,
         isSet: false,
-        isServed: false,
+        isLeaving: false,
         table: { id: null, x: 0, y: 0 },
       };
     },
@@ -53,6 +53,29 @@ const clientsSlice = createSlice({
         }
       });
     },
+    moveClientsToExit(state) {
+      const trash: string[] = [];
+
+      Object.keys(state.clients).forEach((id: string) => {
+        const table = state.clients[id].table;
+        const isLeaving = state.clients[id].isLeaving;
+
+        if (table.id && isLeaving) {
+          if (state.clients[id].x > 20 || state.clients[id].y > 20) {
+            state.clients[id].x -= table.x / 20;
+            state.clients[id].y -= table.y / 20;
+
+            return;
+          }
+
+          trash.push(id);
+        }
+      });
+
+      trash.forEach((id) => {
+        delete state.clients[id];
+      });
+    },
     assignClient(state, action) {
       const { freeClient, freeTable } = action.payload;
 
@@ -60,15 +83,22 @@ const clientsSlice = createSlice({
 
       state.clients[freeClient.id].table = { x, y, id };
     },
-    clientLeave(state, action) {
-      const id = action.payload;
-      delete state.clients[id];
+    clientLeave(state) {
+      const ids = Object.keys(state.clients);
+      const id = ids[0];
+
+      state.clients[id].isLeaving = true;
     },
   },
 });
 
-export const { spawnClient, moveClientsToTable, assignClient, clientLeave } =
-  clientsSlice.actions;
+export const {
+  spawnClient,
+  moveClientsToTable,
+  moveClientsToExit,
+  assignClient,
+  clientLeave,
+} = clientsSlice.actions;
 
 export const getClients = (state: any) => state.clients;
 

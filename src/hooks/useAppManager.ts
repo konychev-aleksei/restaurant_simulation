@@ -4,36 +4,38 @@ import { assignTable, generateTables, getTables } from "../redux/slices/tables";
 import {
   getClients,
   moveClientsToTable,
+  moveClientsToExit,
   spawnClient,
   assignClient,
   clientLeave,
 } from "../redux/slices/clients";
-import {
-  getWaiters,
-  moveWaiters,
-  spawnWaiter,
-  assignWaiter,
-} from "../redux/slices/waiters";
+import { getWaiter, moveWaiter, assignWaiter } from "../redux/slices/waiter";
 
 export default () => {
   const dispatch = useAppDispatch();
 
   const { tables } = useAppSelector(getTables);
   const { clients } = useAppSelector(getClients);
-  const { waiters } = useAppSelector(getWaiters);
+  const waiter = useAppSelector(getWaiter);
 
   useEffect(() => {
     dispatch(generateTables({ count: 8, tableSize: 4 }));
-
-    for (let i = 0; i < 3; ++i) {
-      dispatch(spawnWaiter());
-    }
   }, []);
 
   useEffect(() => {
     const timeInterval = setInterval(() => {
       dispatch(spawnClient());
-    }, 1000);
+    }, 3000);
+
+    return () => {
+      clearInterval(timeInterval);
+    };
+  }, []);
+
+  useEffect(() => {
+    const timeInterval = setInterval(() => {
+      dispatch(clientLeave());
+    }, 5000);
 
     return () => {
       clearInterval(timeInterval);
@@ -43,7 +45,8 @@ export default () => {
   useEffect(() => {
     const timeInterval = setInterval(() => {
       dispatch(moveClientsToTable());
-      dispatch(moveWaiters());
+      dispatch(moveClientsToExit());
+      dispatch(moveWaiter());
     });
 
     return () => {
@@ -90,24 +93,30 @@ export default () => {
   // доводит официанта до необслуженного клиента
   useEffect(() => {
     const timeInterval = setInterval(() => {
-      let freeWaiter: any = null;
-
-      Object.entries(waiters).forEach(([id, waiter]: any) => {
-        if (!waiter.isServing) {
-          freeWaiter = { ...waiter, id };
-        }
-      });
-
       let unservedClient: any = null;
 
-      Object.entries(clients).forEach(([id, client]: any) => {
-        if (!client.isServed && client.isSet) {
-          unservedClient = { ...client, id };
-        }
-      });
+      const clientsEntries = Object.entries(clients);
 
-      if (unservedClient && freeWaiter) {
-        dispatch(assignWaiter({ table: unservedClient.table, freeWaiter }));
+      for (let i = 0; i < clientsEntries.length; ++i) {
+        const [id, client]: any = clientsEntries[i];
+
+        if (
+          client.isSet &&
+          waiter.target !== id &&
+          !waiter.served.includes(id)
+        ) {
+          unservedClient = { ...client, id };
+          break;
+        }
+      }
+
+      if (unservedClient && !waiter.target) {
+        dispatch(
+          assignWaiter({
+            table: unservedClient.table,
+            clientId: unservedClient.id,
+          })
+        );
 
         return;
       }
@@ -116,5 +125,5 @@ export default () => {
     return () => {
       clearInterval(timeInterval);
     };
-  }, [tables, clients, waiters]);
+  }, [tables, clients, waiter]);
 };

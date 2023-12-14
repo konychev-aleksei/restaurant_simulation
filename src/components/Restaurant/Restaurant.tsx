@@ -5,12 +5,12 @@ import Table from "../Table/Table";
 import Client from "../Client/Client";
 import Waiter from "../Waiter/Waiter";
 import { getClients } from "../../redux/slices/clients";
-import { getWaiters } from "../../redux/slices/waiters";
+import { getWaiter } from "../../redux/slices/waiter";
 
 const RestaurantModel = () => {
   const { tables } = useAppSelector(getTables);
   const { clients } = useAppSelector(getClients);
-  const { waiters } = useAppSelector(getWaiters);
+  const waiter = useAppSelector(getWaiter);
 
   return (
     <div className={style.wrapper}>
@@ -24,9 +24,7 @@ const RestaurantModel = () => {
       {Object.entries(clients).map(([id, client]: any) => (
         <Client key={id} x={client.x} y={client.y} />
       ))}
-      {Object.entries(waiters).map(([id, waiter]: any) => (
-        <Waiter key={id} x={waiter.x} y={waiter.y} />
-      ))}
+      <Waiter x={waiter.x} y={waiter.y} />
     </div>
   );
 };
