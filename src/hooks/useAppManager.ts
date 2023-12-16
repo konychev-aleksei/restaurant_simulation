@@ -10,6 +10,7 @@ import {
   clientLeave,
 } from "../redux/slices/clients";
 import { getWaiter, moveWaiter, assignWaiter } from "../redux/slices/waiter";
+import { getConfig } from "../redux/slices/config";
 
 export default () => {
   const dispatch = useAppDispatch();
@@ -18,6 +19,8 @@ export default () => {
   const { clients } = useAppSelector(getClients);
   const waiter = useAppSelector(getWaiter);
 
+  const { spawnRate } = useAppSelector(getConfig);
+
   useEffect(() => {
     dispatch(generateTables({ count: 8, tableSize: 4 }));
   }, []);
@@ -25,12 +28,12 @@ export default () => {
   useEffect(() => {
     const timeInterval = setInterval(() => {
       dispatch(spawnClient());
-    }, 3000);
+    }, spawnRate);
 
     return () => {
       clearInterval(timeInterval);
     };
-  }, []);
+  }, [spawnRate]);
 
   useEffect(() => {
     const timeInterval = setInterval(() => {

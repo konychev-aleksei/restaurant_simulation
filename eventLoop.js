@@ -1,3 +1,5 @@
+/*
+
 console.log(12);
 setTimeout(() => {
   console.log(6);
@@ -11,9 +13,7 @@ const fn = async () => {
   });
 };
 
-fn().then(() => {
-  console.log(88);
-});
+fn();
 
 Promise.resolve()
   .then(() => {
@@ -31,3 +31,107 @@ async function f() {
 }
 
 console.log(28);
+
+/* 
+
+f1();
+
+Promise.resolve().then(() => {
+  console.log(2);
+});
+
+async function f1() {
+  f2().then(() => {
+    console.log(1);
+  });
+}
+
+async function f2() {
+  return new Promise((resolve) => {
+    resolve();
+  });
+}
+
+/*  */
+/*
+f1();
+
+Promise.resolve().then(() => {
+  console.log(2);
+});
+
+async function f1() {
+  f2().then(() => {
+    Promise.resolve().then(() => {
+      console.log(1);
+    });
+  });
+}
+
+async function f2() {}
+
+
+
+
+
+f1();
+
+Promise.resolve().then(() => {
+  console.log(2);
+});
+
+async function f1() {
+  await f2();
+  console.log(1);
+}
+
+async function f2() {
+  return new Promise((resolve) => {
+    resolve();
+  });
+}
+*/
+
+f1();
+
+Promise.resolve().then(() => {
+  console.log(2);
+});
+
+async function f1() {
+  f2().then(() => {
+    console.log(1);
+  });
+}
+
+async function f2() {
+  return new Promise((resolve) => {
+    resolve();
+  });
+}
+
+///
+
+f1();
+
+Promise.resolve().then(() => {
+  console.log(2);
+});
+
+async function f1() {
+  f2()
+    .then(() => {
+      return new Promise((resolve) => {
+        resolve();
+      });
+    })
+    .then(() => {
+      console.log(1);
+    });
+}
+
+async function f2() {}
+
+/// 
+
+
