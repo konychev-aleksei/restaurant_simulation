@@ -10,7 +10,7 @@ import {
   clientLeave,
 } from "../redux/slices/clients";
 import { getWaiter, moveWaiter, assignWaiter } from "../redux/slices/waiter";
-import { getConfig } from "../redux/slices/config";
+import { getConfig, setParams } from "../redux/slices/config";
 
 export default () => {
   const dispatch = useAppDispatch();
@@ -18,12 +18,16 @@ export default () => {
   const { tables } = useAppSelector(getTables);
   const { clients } = useAppSelector(getClients);
   const waiter = useAppSelector(getWaiter);
+  const { isSimulating } = useAppSelector(getConfig);
 
-  const { spawnRate } = useAppSelector(getConfig);
+  const { spawnRate, waiterSpeed, leaveRate1, leaveRate2, clientSpeed } =
+    useAppSelector(getConfig);
 
   useEffect(() => {
-    dispatch(generateTables({ count: 8, tableSize: 4 }));
-  }, []);
+    if (isSimulating) {
+      dispatch(generateTables({ count: 8, tableSize: 4 }));
+    }
+  }, [isSimulating]);
 
   useEffect(() => {
     const timeInterval = setInterval(() => {
@@ -38,24 +42,24 @@ export default () => {
   useEffect(() => {
     const timeInterval = setInterval(() => {
       dispatch(clientLeave());
-    }, 5000);
+    }, (leaveRate1 + leaveRate2) / 2);
 
     return () => {
       clearInterval(timeInterval);
     };
-  }, []);
+  }, [leaveRate1, leaveRate2]);
 
   useEffect(() => {
     const timeInterval = setInterval(() => {
-      dispatch(moveClientsToTable());
-      dispatch(moveClientsToExit());
-      dispatch(moveWaiter());
+      dispatch(moveClientsToTable(clientSpeed));
+      dispatch(moveClientsToExit(clientSpeed));
+      dispatch(moveWaiter(waiterSpeed));
     });
 
     return () => {
       clearInterval(timeInterval);
     };
-  }, []);
+  }, [waiterSpeed, clientSpeed]);
 
   // доводит клиента до стола
   useEffect(() => {
@@ -129,4 +133,14 @@ export default () => {
       clearInterval(timeInterval);
     };
   }, [tables, clients, waiter]);
+
+  useEffect(() => {
+    const timeInterval = setInterval(() => {
+      dispatch(setParams());
+    }, 1000);
+
+    return () => {
+      clearInterval(timeInterval);
+    };
+  }, []);
 };

@@ -27,6 +27,9 @@ const clientsSlice = createSlice({
   name: "clientsSlice",
   initialState,
   reducers: {
+    clearClients() {
+      return initialState;
+    },
     spawnClient(state) {
       const id = uuidv4();
       state.clients[id] = {
@@ -85,8 +88,12 @@ const clientsSlice = createSlice({
     },
     clientLeave(state) {
       const ids = Object.keys(state.clients);
-      const id = ids[0];
 
+      if (!ids.length) {
+        return;
+      }
+
+      const id = ids[0];
       state.clients[id].isLeaving = true;
     },
   },
@@ -98,6 +105,7 @@ export const {
   moveClientsToExit,
   assignClient,
   clientLeave,
+  clearClients,
 } = clientsSlice.actions;
 
 export const getClients = (state: any) => state.clients;

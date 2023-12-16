@@ -6,11 +6,14 @@ import Client from "../Client/Client";
 import Waiter from "../Waiter/Waiter";
 import { getClients } from "../../redux/slices/clients";
 import { getWaiter } from "../../redux/slices/waiter";
+import useAppManager from "../../hooks/useAppManager";
 
 const RestaurantModel = () => {
   const { tables } = useAppSelector(getTables);
   const { clients } = useAppSelector(getClients);
   const waiter = useAppSelector(getWaiter);
+
+  useAppManager();
 
   return (
     <div className={style.wrapper}>

@@ -26,7 +26,11 @@ const waiterSlice = createSlice({
   name: "waiterSlice",
   initialState,
   reducers: {
-    moveWaiter(state) {
+    clearWaiter() {
+      return initialState;
+    },
+    moveWaiter(state, action) {
+      const waiterSpeed = action.payload;
       const table = state.table;
 
       if (!table.id) {
@@ -37,8 +41,8 @@ const waiterSlice = createSlice({
         Math.abs(table.x - state.x) > 10 ||
         Math.abs(table.y - state.y) > 10
       ) {
-        state.x += (table.x - state.x) / 40;
-        state.y += (table.y - state.y) / 40;
+        state.x += (table.x - state.x) / (waiterSpeed * 0.05);
+        state.y += (table.y - state.y) / (waiterSpeed * 0.05);
       } else {
         if (state.target) {
           state.served.push(state.target);
@@ -58,7 +62,7 @@ const waiterSlice = createSlice({
   },
 });
 
-export const { moveWaiter, assignWaiter } = waiterSlice.actions;
+export const { moveWaiter, assignWaiter, clearWaiter } = waiterSlice.actions;
 
 export const getWaiter = (state: any) => state.waiter;
 

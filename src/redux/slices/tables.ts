@@ -19,6 +19,9 @@ const tableSlice = createSlice({
   name: "tableSlice",
   initialState,
   reducers: {
+    clearTables() {
+      return initialState;
+    },
     generateTables(state, action) {
       const { count, tableSize } = action.payload;
 
@@ -26,7 +29,7 @@ const tableSlice = createSlice({
 
       for (let i = 0; i < count; i++) {
         for (let j = 0; j < count; ++j) {
-          const tableExists = Math.round(Math.random());
+          const tableExists = Math.random() > 0.7;
 
           if (tableExists) {
             const id = uuidv4();
@@ -52,7 +55,7 @@ const tableSlice = createSlice({
   },
 });
 
-export const { generateTables, assignTable } = tableSlice.actions;
+export const { generateTables, assignTable, clearTables } = tableSlice.actions;
 
 export const getTables = (state: any) => state.tables;
 
