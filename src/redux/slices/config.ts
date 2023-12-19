@@ -26,7 +26,7 @@ const initialState: TConfig = {
   waiterSpeed: 500,
   leaveRate1: 0,
   leaveRate2: 0,
-  clientSpeed: 500,
+  clientSpeed: 0,
   serviceSpeed: 1000,
   foodQuality: 1000,
   time: [],

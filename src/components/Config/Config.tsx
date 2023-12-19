@@ -1,4 +1,4 @@
-import { Slider, Button, TextField } from "@mui/material";
+import { Slider, Button } from "@mui/material";
 import style from "./style.module.scss";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import {
@@ -81,7 +81,7 @@ const Config = () => {
         <Slider min={0} max={10} onChange={handleChangeQuality2} />
       </div>
       <div>
-        <p>Суетливость клиентов - {(1 / clientSpeed).toFixed(2)}</p>
+        <p>Суетливость клиентов - {(clientSpeed).toFixed(2)}</p>
         <Slider min={0} max={10} onChange={handleChangeClientSpeed} />
       </div>
       <div>
